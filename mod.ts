@@ -2,12 +2,13 @@ import { Application, send } from "https://deno.land/x/oak/mod.ts";
 
 // routers
 import asciiRouter from "./routers/asciiRouter.ts";
+import planetsRouter from "./routers/planetsRouter.ts";
 
 const app = new Application();
 const port = Number(Deno.env.get("PORT")) || 5000;
 
-console.log(Deno.cwd());
-console.log(import.meta.url);
+// console.log(Deno.cwd());
+// console.log(import.meta.url);
 
 // middleware
 // ctx stands for context (contain app state)
@@ -33,6 +34,8 @@ app.use(async (ctx: any, next) => {
 // routes
 app.use(asciiRouter.routes());
 app.use(asciiRouter.allowedMethods());
+app.use(planetsRouter.routes());
+app.use(planetsRouter.allowedMethods());
 
 // serving static assets
 app.use(async (ctx) => {
@@ -45,7 +48,7 @@ app.use(async (ctx) => {
     "/images/favicon.png",
   ];
 
-  if (fileWhitelist.includes(ctx.request.url.pathname)) {
+  if (fileWhitelist.includes(filePath)) {
     await send(ctx, filePath, {
       root: `${Deno.cwd()}/public`,
       index: "index.html",
@@ -61,4 +64,4 @@ app.use(async (ctx) => {
 
 if (import.meta.main) await app.listen({ port: port });
 
-// $ deno run --allow-net --allow-env --allow-read  mod.ts
+// $ deno run --allow-net --allow-read --allow-write --allow-env mod.ts
