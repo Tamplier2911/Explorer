@@ -47,7 +47,9 @@ function abortLaunch() {
   // Delete launch and reload launches.
 }
 
-function submitLaunch() {
+function submitLaunch(e) {
+  e.preventDefault();
+
   const target = document.getElementById('planets-selector').value;
   const launchDate = new Date(document.getElementById('launch-day').value);
   const mission = document.getElementById('mission-name').value;

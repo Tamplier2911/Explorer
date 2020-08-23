@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NASA Control Center</title>
-    <link href="//fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300&display=swap" rel="stylesheet">
-    <link href="//fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
+    <link
+      href="//fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="//fonts.googleapis.com/css2?family=Space+Mono&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
     <link rel="shortcut icon" href="images/favicon.png" />
   </head>
@@ -14,7 +20,6 @@
     <script src="javascripts/script.js"></script>
 
     <div class="container">
-      
       <header class="header">
         <div class="header__wrapper">
           <div class="header__left">
@@ -23,82 +28,150 @@
               <a href="https://deno.land">D:E:N:O</a>
               <span class="title-event-wrap">:</span>
             </h1>
+          </div>
+          <div class="header__right">
+            <h1 class="title-global">
+              <a onclick="navigate('launch')">NASA Mission Control</a>
+            </h1>
+            <nav>
+              <ul>
+                <li><a onclick="navigate('launch')">[New Mission]</a></li>
+                <li><a onclick="navigate('upcoming')">[Upcoming]</a></li>
+                <li><a onclick="navigate('history')">[History]</a></li>
+              </ul>
+            </nav>
+          </div>
         </div>
-        <div class="header__right">
-          <h1 class="title-global"><a onclick="navigate('launch')">NASA Mission Control</a></h1>
-          <nav>
-            <ul>
-              <li><a onclick="navigate('launch')">[New Mission]</a></li>
-              <li><a onclick="navigate('upcoming')">[Upcoming]</a></li>
-              <li><a onclick="navigate('history')">[History]</a></li>
-            </ul>
-          </nav>
-        </div>
-      </div>
       </header>
 
-      <!-- <div id="sidebar">
-        <div id="sponsor">
-          <div class="quiet">We are going interstellar! </div>
-          <div class="sponsor">In partnership with SpaceX and Zero to Mastery we are advancing technology to explore planets beyond our solar system.</div>
-        </div>
-      </div> -->
-
       <main>
-        <section id="launch">
-          <p>Schedule a mission launch for interstellar travel to one of the Kepler Exoplanets.</p>
-          <p>Only confirmed planets orbiting stars matching the following criteria are available for the earliest scheduled missions:
-            <ul>
-              <li> 0.78 M☉ ≤ (Solar Mass) ≤ 1.4 M☉</li>
-              <li>0.99 R☉ ≤ (Solar Radius) ≤ 1.01 R☉</li>
-              <li>0.5 R🜨 ≤ (Planetary Radius) ≤ 1.5 R🜨</li>
-            </ul>
-          </p>
-          <form>
-            <div class="form-item">
-              <label>Launch Date          </label>
-              <input type="date" id="launch-day" max="2030-12-31" />
+        <div class="content">
+          <section id="launch" class="launch">
+            <div class="launch__schedule">
+              Schedule a mission launch for interstellar travel to one of the
+              Kepler Exoplanets.
             </div>
-            <div class="form-item">
-              <label>Mission Name         </label>
-              <input type="text" id="mission-name" />
+            <div class="launch__measures">
+              <p class="launch__measures--p">
+                Only confirmed planets orbiting stars matching the following
+                criteria are available for the earliest scheduled missions:
+              </p>
+              <ul class="launch__measures--ul">
+                <li class="launch__measures--li">
+                  <span>0.78 M☉</span>
+                  <span>≤</span>
+                  <span>(Solar Mass)</span>
+                  <span>≤</span>
+                  <span>1.4 M☉</span>
+                </li>
+                <li class="launch__measures--li">
+                  <span>0.99 R☉ </span>
+                  <span>≤</span>
+                  <span>(Solar Radius)</span>
+                  <span>≤</span>
+                  <span>1.01 R☉</span>
+                </li>
+                <li class="launch__measures--li">
+                  <span>0.5 R🜨</span>
+                  <span>≤</span>
+                  <span>(Planetary Radius)</span>
+                  <span>≤</span>
+                  <span>1.5 R🜨</span>
+                </li>
+              </ul>
             </div>
-            <div class="form-item">
-              <label>Rocket Type          </label>
-              <input type="text" id="rocket-name" value="ZTM Experimental IS1" disabled />
-            </div>
-            <div class="form-item">
-              <label>Destination Exoplanet</label>
-              <select id="planets-selector">
-              </select>
-            </div>
-            <a class="submit" onclick="submitLaunch()">[Save Mission ✔]</a>
-          </form>
+            <form class="launch__form">
+              <div class="form__element">
+                <label class="form__element--label">Launch Date </label>
+                <input
+                  class="form__element--input"
+                  name="date"
+                  type="date"
+                  id="launch-day"
+                  max="2030-12-31"
+                />
+              </div>
+              <div class="form__element">
+                <label class="form__element--label">Mission Name </label>
+                <input
+                  class="form__element--input"
+                  name="name"
+                  type="text"
+                  id="mission-name"
+                />
+              </div>
+              <div class="form__element">
+                <label class="form__element--label">Rocket Type </label>
+                <input
+                  class="form__element--input"
+                  name="rocket"
+                  type="text"
+                  id="rocket-name"
+                  value="ZTM Experimental IS1"
+                  disabled
+                />
+              </div>
+              <div class="form__element">
+                <label class="form__element--label"
+                  >Destination Exoplanet</label
+                >
+                <select
+                  class="form__element--input"
+                  name="planet"
+                  id="planets-selector"
+                >
+                </select>
+              </div>
+              <button
+                class="form__element--submit"
+                type="submit"
+                onclick="submitLaunch(event)"
+              >
+                [Save Mission ✔]
+              </button>
+            </form>
 
-          <p id="launch-success" hidden>Congratulations! Interstellar launch is scheduled.</p>
-        </section>
+            <p id="launch-success" hidden>
+              Congratulations! Interstellar launch is scheduled.
+            </p>
+          </section>
 
-        <section id="history" hidden>
-          <p>History of tracked mission launches. Includes SpaceX launches starting from the year 2006.</p>
-          <div id="history-list"></div>
-        </section>
+          <section id="history" hidden>
+            <p>
+              History of tracked mission launches. Includes SpaceX launches
+              starting from the year 2006.
+            </p>
+            <div id="history-list"></div>
+          </section>
 
-        <section id="upcoming" hidden>
-          <p>Upcoming missions including both SpaceX and Zero to Mastery rockets.</p>
-          <p>Warning! Clicking on the <span class="delete">✖</span> aborts the mission.</p>
-          <div id="upcoming-list"></div>
-        </section>
+          <section id="upcoming" hidden>
+            <p>
+              Upcoming missions including both SpaceX and Zero to Mastery
+              rockets.
+            </p>
+            <p>
+              Warning! Clicking on the <span class="delete">✖</span> aborts the
+              mission.
+            </p>
+            <div id="upcoming-list"></div>
+          </section>
+
+          <div class="sidebar">
+            <div class="sidebar__top">We are going interstellar!</div>
+            <div class="sidebar__bot">
+              In partnership with SpaceX and Zero to Mastery we are advancing
+              technology to explore planets beyond our solar system.
+            </div>
+          </div>
+        </div>
       </main>
 
       <footer class="footer">
         <div class="footer__content">
-          This is not an official site and is not affiliated with NASA or SpaceX in any way. For educational purposes only.
+          This is not an official site and is not affiliated with NASA or SpaceX
+          in any way. For educational purposes only.
         </div>
       </footer>
-
     </div>
-
   </body>
 </html>
-
-
