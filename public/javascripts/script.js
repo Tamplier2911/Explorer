@@ -22,6 +22,22 @@ const enforceUpdate = (loading, cb, time) => {
   loading ? setTimeout(cb, time) : cb();
 };
 
+// render success/error note
+const renderNote = (text, success, time) => {
+  const launchNote = document.getElementById('launch-success');
+
+  const div = document.createElement('div');
+
+  div.textContent = text;
+  div.classList.add(success ? 'success' : 'failure');
+  launchNote.appendChild(div);
+
+  setTimeout(() => {
+    div.classList.remove(success ? 'success' : 'failure');
+    launchNote.removeChild(div);
+  }, time);
+};
+
 function initValues() {
   const today = new Date().toISOString().split('T')[0];
   const launchDaySelector = document.getElementById('launch-day');
@@ -30,7 +46,6 @@ function initValues() {
 }
 
 async function loadLaunches() {
-  // TODO: Once API is ready.
   try {
     // is loading
     loadingLaunches = true;
@@ -39,46 +54,87 @@ async function loadLaunches() {
     const res = await fetch('/api/v1/launches', {
       method: 'GET',
     });
+
+    if (!res.ok) throw new Error('Server respond with status FAIL.');
+
     const data = await res.json();
     // console.log(data);
     launches = data;
 
+    // render success notification
+    renderNote('Exoplanets are successfuly loaded.', true, 10000);
+
     // is loaded
     loadingLaunches = false;
-    // console.log(loadingLaunches, 'launches');
   } catch (err) {
-    console.log(err.message);
+    // render failure notification
+    renderNote(`Something is not quite right...\n${err.message}`, false, 10000);
+
+    // is loaded
+    loadingLaunches = false;
   }
 }
 
 async function loadPlanets() {
-  // TODO: Once API is ready.
-
   try {
     loadingPlanets = true;
-    // console.log(loadingPlanets, 'planets');
 
     const res = await fetch('/api/v1/planets', {
       method: 'GET',
     });
+
+    if (!res.ok) throw new Error('Server respond with status FAIL.');
+
     const data = await res.json();
     // console.log(data);
     planets = data;
 
+    // render success notification
+    renderNote('Launches are successfuly loaded.', true, 10000);
+
     // is loaded
     loadingPlanets = false;
-    // console.log(loadingPlanets, 'planets');
   } catch (err) {
-    console.log(err.message);
+    // render failure notification
+    renderNote(`Something is not quite right...\n${err.message}`, false, 10000);
+
+    // is loaded
+    loadingPlanets = false;
   }
 }
 
-function abortLaunch() {
-  // TODO: Once API is ready.
-  // Delete launch and reload launches.
+async function abortLaunch(flightNumber) {
+  try {
+    const res = await fetch(`/api/v1/launches/${flightNumber}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        flightNumber,
+        upcoming: false,
+        success: false,
+      }),
+    });
+
+    if (!res.ok) throw new Error('Server respond with status FAIL.');
+
+    await loadLaunches();
+
+    listUpcoming();
+
+    // render success notification
+    renderNote(`Launch ${flightNumber} was successfuly aborted.`, true, 10000);
+  } catch (err) {
+    // render failure notification
+    renderNote(`Something is not quite right...\n${err.message}`, false, 10000);
+
+    // is loaded
+    loadingPlanets = false;
+  }
 }
 
-function submitLaunch(e) {
+async function submitLaunch(e) {
   e.preventDefault();
 
   const target = document.getElementById('planets-selector').value;
@@ -92,20 +148,48 @@ function submitLaunch(e) {
   // remvoe later
   const customers = ['NASA', 'ZTM'];
 
-  launches.push({
-    target,
-    launchDate: launchDate / 1000,
+  const newLaunch = {
+    flightNumber,
     mission,
     rocket,
-    flightNumber,
-    customers,
+    launchDate: launchDate / 1000,
     upcoming: true,
-  });
+    target,
+    customers,
+  };
 
-  document.getElementById('launch-success').hidden = false;
+  try {
+    // loading
+    loadingLaunches = true;
 
-  // TODO: Once API is ready.
-  // Submit above data to launch system and reload launches.
+    const res = await fetch('/api/v1/launches', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newLaunch),
+    });
+
+    if (!res.ok) throw new Error('Server respond with status FAIL.');
+    const data = await res.json();
+    launches.push(data);
+
+    // render success notification
+    renderNote(
+      'Congratulations! Interstellar launch is scheduled.',
+      true,
+      10000
+    );
+
+    // is loaded
+    loadingLaunches = false;
+  } catch (err) {
+    // render failure notification
+    renderNote(`Something is not quite right...\n${err.message}`, false, 10000);
+
+    // is loaded
+    loadingLaunches = false;
+  }
 }
 
 function listPlanets() {
@@ -196,8 +280,8 @@ function listHistory() {
       .filter((launch) => !launch.upcoming)
       .forEach((launch) => {
         const success = launch.success
-          ? `<span class="success status-square"></span>`
-          : `<span class="failure status-square"></span>`;
+          ? `<span class="status-square positive"></span>`
+          : `<span class="status-square negative"></span>`;
         const launchDate = new Date(launch.launchDate * 1000).toDateString();
         const flightNumber = String(launch.flightNumber);
         const mission = chopString(launch.mission);
@@ -224,16 +308,18 @@ function navigate(navigateTo) {
     .forEach((page) => {
       document.getElementById(page).hidden = true;
     });
-  document.getElementById('launch-success').hidden = true;
 
   if (navigateTo === 'upcoming') {
     // loadLaunches();
+    // document.getElementById('launch-success').hidden = true;
     listUpcoming();
   } else if (navigateTo === 'history') {
     // loadLaunches();
+    // document.getElementById('launch-success').hidden = true;
     listHistory();
   } else {
     // loadPlanets
+    // document.getElementById('launch-success').hidden = false;
     listPlanets();
   }
 }

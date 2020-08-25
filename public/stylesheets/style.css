@@ -27,11 +27,17 @@
 
 .failure {
   color: var(--cl-red);
+}
+
+.negative {
   background-color: var(--cl-red);
 }
 
 .success {
   color: var(--cl-green);
+}
+
+.positive {
   background-color: var(--cl-green);
 }
 
@@ -73,6 +79,28 @@ body {
   font-size: 1.6rem;
   font-weight: 400;
   line-height: 1.2;
+}
+
+body::-webkit-scrollbar {
+  width: 0.8rem;
+  background-color: var(--cl-secondary);
+  background-color: var(--cl-bg);
+  /* border-radius: 5rem; */
+}
+
+body::-webkit-scrollbar-thumb {
+  /* background-image: linear-gradient(
+    to bottom,
+    var(--cl-scrollThumb-bg1),
+    var(--cl-scrollThumb-bg2)
+  ); */
+  background-color: var(--cl-main);
+  /* border-radius: 5rem; */
+}
+
+body::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px var(--cl-silver);
+  box-shadow: inset 0 0 6px var(--cl-silver);
 }
 
 .header {
@@ -208,11 +236,16 @@ section {
   margin-bottom: 10px;
 }
 
-/* .sidebar__bot {
+.sidebar__bot {
+  margin-bottom: 10px;
 }
 
-.launch {
-} */
+#launch-success div:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+/* .launch {
+}  */
 
 .launch__schedule {
   margin-bottom: 10px;
@@ -269,6 +302,7 @@ section {
 .launch__form {
   display: flex;
   flex-direction: column;
+  margin-bottom: 10px;
 }
 
 .form__element {
@@ -395,6 +429,7 @@ section {
 
 .upcoming__bot--item {
   display: flex;
+  align-items: center;
 }
 
 .upcoming__bot--item span:nth-child(1) {
@@ -503,6 +538,7 @@ section {
 .history__bot--item {
   display: flex;
   margin-bottom: 6px;
+  align-items: center;
 }
 
 .history__bot--item span:nth-child(1) {
