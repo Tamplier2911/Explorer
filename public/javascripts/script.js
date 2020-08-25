@@ -1,6 +1,7 @@
 // @ts-nocheck
 
 let launches = [];
+let planets = [];
 
 const numberHeading = 'No.';
 const dateHeading = 'Date';
@@ -9,8 +10,17 @@ const rocketHeading = 'Rocket';
 const targetHeading = 'Destination';
 const customersHeading = 'Customers';
 
+let loadingPlanets = false;
+let loadingLaunches = false;
+
+// format string to look pretty
 const chopString = (str) =>
   str.length > 19 ? [...str.slice(0, 19)].concat('...').join('') : str;
+
+// simple update enforcer
+const enforceUpdate = (loading, cb, time) => {
+  loading ? setTimeout(cb, time) : cb();
+};
 
 function initValues() {
   const today = new Date().toISOString().split('T')[0];
@@ -19,31 +29,48 @@ function initValues() {
   launchDaySelector.setAttribute('value', today);
 }
 
-function loadLaunches() {
+async function loadLaunches() {
   // TODO: Once API is ready.
-  // Load launches and sort by flight number.
+  try {
+    // is loading
+    loadingLaunches = true;
+    // console.log(loadingLaunches, 'launches');
+
+    const res = await fetch('/api/v1/launches', {
+      method: 'GET',
+    });
+    const data = await res.json();
+    // console.log(data);
+    launches = data;
+
+    // is loaded
+    loadingLaunches = false;
+    // console.log(loadingLaunches, 'launches');
+  } catch (err) {
+    console.log(err.message);
+  }
 }
 
 async function loadPlanets() {
   // TODO: Once API is ready.
-  const planets = [];
 
   try {
+    loadingPlanets = true;
+    // console.log(loadingPlanets, 'planets');
+
     const res = await fetch('/api/v1/planets', {
       method: 'GET',
     });
     const data = await res.json();
-    // planets.concat(data);
-    planets.push(...data);
+    // console.log(data);
+    planets = data;
+
+    // is loaded
+    loadingPlanets = false;
+    // console.log(loadingPlanets, 'planets');
   } catch (err) {
     console.log(err.message);
   }
-
-  const planetSelector = document.getElementById('planets-selector');
-  planets.forEach((planet) => {
-    planetSelector.innerHTML += `
-      <option value="${planet.kepoi_name}">${planet.kepoi_name}</option>`;
-  });
 }
 
 function abortLaunch() {
@@ -72,7 +99,7 @@ function submitLaunch(e) {
     rocket,
     flightNumber,
     customers,
-    upcoming: Math.random() > 0.5 ? false : true,
+    upcoming: true,
   });
 
   document.getElementById('launch-success').hidden = false;
@@ -81,41 +108,81 @@ function submitLaunch(e) {
   // Submit above data to launch system and reload launches.
 }
 
+function listPlanets() {
+  const planetSelector = document.getElementById('planets-selector');
+  if (loadingPlanets) {
+    planetSelector.innerHTML = `<option>...Loading</option>`;
+    enforceUpdate(loadingPlanets, listPlanets, 2000);
+  } else {
+    planets.forEach((planet) => {
+      planetSelector.innerHTML = `
+        <option value="${planet.kepoi_name}">${planet.kepoi_name}</option>`;
+    });
+  }
+}
+
 function listUpcoming() {
   const upcomingList = document.getElementById('upcoming-list');
-  upcomingList.innerHTML = `
-    <div class="upcoming__bot--head">
-      <span class="upcoming__bot--line">RM</span>
-      <span class="upcoming__bot--line">${numberHeading}</span>
-      <span class="upcoming__bot--line">${dateHeading}</span>
-      <span class="upcoming__bot--line">${missionHeading}</span>
-      <span class="upcoming__bot--line">${rocketHeading}</span>
-      <span class="upcoming__bot--line">${targetHeading}</span>
+  if (loadingLaunches) {
+    upcomingList.innerHTML = `
+    <div class="loading">
+      <div class="loading__wrapper">
+        <div class="loading__inner"></div>
+        <div class="loading__inner"></div>
+      </div>
     </div>`;
-  launches
-    .filter((launch) => launch.upcoming)
-    .forEach((launch) => {
-      // console.log(launch);
-      const launchDate = new Date(launch.launchDate * 1000).toDateString();
-      const flightNumber = String(launch.flightNumber);
-      const mission = chopString(launch.mission);
-      const rocket = chopString(launch.rocket);
-      const target = launch.target ?? '';
-      upcomingList.innerHTML += `
-        <div class="upcoming__bot--item">
-          <span class="upcoming__bot--desc" onclick="abortLaunch(${launch.flightNumber})">✖</span> 
-          <span class="upcoming__bot--desc">${flightNumber}</span> 
-          <span class="upcoming__bot--desc">${launchDate}</span> 
-          <span class="upcoming__bot--desc">${mission}</span> 
-          <span class="upcoming__bot--desc">${rocket}</span> 
-          <span class="upcoming__bot--desc">${target}</span>
-        </div>`;
-    });
+    enforceUpdate(loadingLaunches, listUpcoming, 2000);
+  } else {
+    upcomingList.innerHTML = `
+     <div class="upcoming__bot--head">
+       <span class="upcoming__bot--line">RM</span>
+       <span class="upcoming__bot--line">${numberHeading}</span>
+       <span class="upcoming__bot--line">${dateHeading}</span>
+       <span class="upcoming__bot--line">${missionHeading}</span>
+       <span class="upcoming__bot--line">${rocketHeading}</span>
+       <span class="upcoming__bot--line">${targetHeading}</span>
+     </div>`;
+
+    // filter all upcoming launches
+    // const filteredLaunches = launches.filter((launch) => launch.upcoming);
+    // sort by current date
+    // filteredLaunches.sort((a, b) => a.launchDate - b.launchDate);
+
+    launches
+      .filter((launch) => launch.upcoming)
+      .forEach((launch) => {
+        // console.log(launch);
+        const launchDate = new Date(launch.launchDate * 1000).toDateString();
+        const flightNumber = String(launch.flightNumber);
+        const mission = chopString(launch.mission);
+        const rocket = chopString(launch.rocket);
+        const target = launch.target ?? '';
+        upcomingList.innerHTML += `
+         <div class="upcoming__bot--item">
+           <span class="upcoming__bot--desc" onclick="abortLaunch(${launch.flightNumber})">✖</span> 
+           <span class="upcoming__bot--desc">${flightNumber}</span> 
+           <span class="upcoming__bot--desc">${launchDate}</span> 
+           <span class="upcoming__bot--desc">${mission}</span> 
+           <span class="upcoming__bot--desc">${rocket}</span> 
+           <span class="upcoming__bot--desc">${target}</span>
+         </div>`;
+      });
+  }
 }
 
 function listHistory() {
   const historyList = document.getElementById('history-list');
-  historyList.innerHTML = `
+  if (loadingLaunches) {
+    historyList.innerHTML = `
+    <div class="loading">
+      <div class="loading__wrapper">
+        <div class="loading__inner"></div>
+        <div class="loading__inner"></div>
+      </div>
+    </div>`;
+    enforceUpdate(loadingLaunches, listHistory, 2000);
+  } else {
+    historyList.innerHTML = `
     <div class="history__bot--head">
       <span class="history__bot--line">+</span>
       <span class="history__bot--line">${numberHeading}</span>
@@ -124,18 +191,19 @@ function listHistory() {
       <span class="history__bot--line">${rocketHeading}</span>
       <span class="history__bot--line">${customersHeading}</span>
     </div>`;
-  launches
-    .filter((launch) => !launch.upcoming)
-    .forEach((launch) => {
-      const success = launch.success
-        ? `<span class="success">█</span>`
-        : `<span class="failure">█</span>`;
-      const launchDate = new Date(launch.launchDate * 1000).toDateString();
-      const flightNumber = String(launch.flightNumber);
-      const mission = chopString(launch.mission);
-      const rocket = chopString(launch.rocket);
-      const customers = launch.customers.join(', ').slice(0, 19);
-      historyList.innerHTML += `
+    // █ █
+    launches
+      .filter((launch) => !launch.upcoming)
+      .forEach((launch) => {
+        const success = launch.success
+          ? `<span class="success status-square"></span>`
+          : `<span class="failure status-square"></span>`;
+        const launchDate = new Date(launch.launchDate * 1000).toDateString();
+        const flightNumber = String(launch.flightNumber);
+        const mission = chopString(launch.mission);
+        const rocket = chopString(launch.rocket);
+        const customers = launch.customers.join(', ').slice(0, 19);
+        historyList.innerHTML += `
         <div class="history__bot--item">
           <span class="history__bot--desc">${success}</span> 
           <span class="history__bot--desc">${flightNumber}</span> 
@@ -144,7 +212,8 @@ function listHistory() {
           <span class="history__bot--desc">${rocket}</span>
           <span class="history__bot--desc">${customers}</span> 
         </div>`;
-    });
+      });
+  }
 }
 
 function navigate(navigateTo) {
@@ -158,11 +227,14 @@ function navigate(navigateTo) {
   document.getElementById('launch-success').hidden = true;
 
   if (navigateTo === 'upcoming') {
-    loadLaunches();
+    // loadLaunches();
     listUpcoming();
   } else if (navigateTo === 'history') {
-    loadLaunches();
+    // loadLaunches();
     listHistory();
+  } else {
+    // loadPlanets
+    listPlanets();
   }
 }
 
@@ -170,4 +242,5 @@ window.onload = () => {
   initValues();
   loadLaunches();
   loadPlanets();
+  navigate('launch');
 };
