@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="images/favicon.png" />
   </head>
 
-  <body>
+  <body id="body">
     <script src="javascripts/script.js"></script>
 
     <div class="container">
@@ -160,12 +160,19 @@
             <div id="launch-success"></div>
           </div>
         </div>
+
+        <div class="video">
+          <video id="video" class="video__element" autoplay loop muted>
+            Your browser does not support the video tag.
+          </video>
+        </div>
       </main>
 
       <footer class="footer">
         <div class="footer__content">
           This is not an official site and is not affiliated with NASA or SpaceX
-          in any way. For educational purposes only.
+          in any way.
+          <!-- For educational purposes only. -->
         </div>
       </footer>
     </div>

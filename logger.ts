@@ -1,5 +1,5 @@
 // standart logger
-import * as log from "https://deno.land/std/log/mod.ts";
+import { log } from "./deps.ts";
 
 // logger setup
 const setupLogger = async () => {

@@ -38,6 +38,48 @@ const renderNote = (text, success, time) => {
   }, time);
 };
 
+// load proper vid based on screen width
+const loadRespectiveVideo = () => {
+  const video = document.getElementById('video');
+  // const height = window.screen.height;
+  const width = window.screen.width;
+
+  if (width > 1024) {
+    video.innerHTML = `
+      <source
+        src="./videos/earth-large-compressed-mp4.mp4"
+        type="video/mp4"
+      />
+      <source
+        src="./videos/earth-large-compressed-webm.webm"
+        type="video/webm"
+      />
+    `;
+  } else if (width >= 720 && width <= 1024) {
+    video.innerHTML = `
+      <source
+        src="./videos/earth-medium-compressed-mp4.mp4"
+        type="video/mp4"
+      />
+      <source
+        src="./videos/earth-medium-compressed-webm.webm"
+        type="video/webm"
+      />
+    `;
+  } else if (width < 720) {
+    video.innerHTML = `
+      <source
+        src="./videos/earth-small-compressed-mp4.mp4"
+        type="video/mp4"
+      />
+      <source
+        src="./videos/earth-small-compressed-webm.webm"
+        type="video/webm"
+      />
+    `;
+  }
+};
+
 function initValues() {
   const today = new Date().toISOString().split('T')[0];
   const launchDaySelector = document.getElementById('launch-day');
@@ -198,8 +240,9 @@ function listPlanets() {
     planetSelector.innerHTML = `<option>...Loading</option>`;
     enforceUpdate(loadingPlanets, listPlanets, 2000);
   } else {
+    planetSelector.innerHTML = ``;
     planets.forEach((planet) => {
-      planetSelector.innerHTML = `
+      planetSelector.innerHTML += `
         <option value="${planet.kepoi_name}">${planet.kepoi_name}</option>`;
     });
   }
@@ -328,5 +371,6 @@ window.onload = () => {
   initValues();
   loadLaunches();
   loadPlanets();
+  loadRespectiveVideo();
   navigate('launch');
 };

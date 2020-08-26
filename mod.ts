@@ -1,5 +1,5 @@
 // oak
-import { Application, send } from "https://deno.land/x/oak/mod.ts";
+import { Application, send } from "./deps.ts";
 
 // routers
 import asciiRouter from "./routers/asciiRouter.ts";
@@ -75,6 +75,12 @@ app.use(async (ctx) => {
     "/stylesheets/style.css",
     "/javascripts/script.js",
     "/images/favicon.png",
+    "/videos/earth-small-compressed-mp4.mp4",
+    "/videos/earth-small-compressed-webm.webm",
+    "/videos/earth-medium-compressed-mp4.mp4",
+    "/videos/earth-medium-compressed-webm.webm",
+    "/videos/earth-large-compressed-mp4.mp4",
+    "/videos/earth-large-compressed-webm.webm",
   ];
 
   if (fileWhitelist.includes(filePath)) {
@@ -92,4 +98,8 @@ if (import.meta.main) {
   await app.listen({ port: port });
 }
 
-// $ deno run --allow-net --allow-read --allow-write --allow-env mod.ts
+// normal bootstrap
+// $ deno run --allow-net --allow-read --allow-write --allow-env --lock=lock.json mod.ts
+
+// write lock file
+// $ deno run --allow-net --allow-read --allow-write --allow-env --lock-write --lock=lock.json mod.ts

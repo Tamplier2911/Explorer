@@ -1,5 +1,5 @@
-import { BufReader } from "https://deno.land/std/io/bufio.ts";
-import { parse } from "https://deno.land/std/encoding/csv.ts";
+import { BufReader } from "../deps.ts";
+import { parse } from "../deps.ts";
 
 const parseCSV = async (path: string) => {
   // using Deno.open premitive to parse csv file
