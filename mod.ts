@@ -72,8 +72,10 @@ app.use(async (ctx) => {
   const fileWhitelist = [
     "/",
     "/index.html",
-    "/stylesheets/style.css",
-    "/javascripts/script.js",
+    // "/stylesheets/style.css",
+    "/css/styles.908d04b95fe6521a8204.css",
+    // "/javascripts/script.js",
+    "/js/main.4741faf3ebe1e285caa7.js",
     "/images/favicon.png",
     "/videos/earth-small-compressed-mp4.mp4",
     "/videos/earth-small-compressed-webm.webm",
