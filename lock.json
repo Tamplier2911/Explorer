@@ -34,6 +34,7 @@
   "https://deno.land/std@0.66.0/bytes/mod.ts": "b1a149ac741728db00bda9ce1a2d044f248edd5ac95e708a6cc501bfd3adb4a7",
   "https://deno.land/std@0.66.0/encoding/csv.ts": "99ff73c64b7eb8cd3e26d51dbe82bcae95cda99c7eb53f87774ec2a34f0c0fe6",
   "https://deno.land/std@0.66.0/encoding/utf8.ts": "8654fa820aa69a37ec5eb11908e20b39d056c9bf1c23ab294303ff467f3d50a1",
+  "https://deno.land/std@0.66.0/flags/mod.ts": "11f51e7fec72bfe01d531acb4e0b0ae54115439367377b088b3c6e7e7142918f",
   "https://deno.land/std@0.66.0/fmt/colors.ts": "eb606cfb06e3f03a0222f09768a9701de2dd31c1fc8fa3a939137792a472962a",
   "https://deno.land/std@0.66.0/fs/exists.ts": "5429dce6587bfcdde06a7a2a1fd5ad932c17d74ca082e67934fa646cff1d2e57",
   "https://deno.land/std@0.66.0/io/bufio.ts": "e76c5b7bf978a638aae6f62b87efde3ab7203b85902ce9b84ac8388c8c2bb104",

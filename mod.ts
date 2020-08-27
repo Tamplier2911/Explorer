@@ -1,5 +1,6 @@
 // oak
 import { Application, send } from "./deps.ts";
+import { flags } from "./deps.ts";
 
 // routers
 import asciiRouter from "./routers/asciiRouter.ts";
@@ -12,7 +13,11 @@ import logger from "./logger.ts";
 const log = await logger();
 
 const app = new Application();
-const port = Number(Deno.env.get("PORT")) || 5000;
+// const port = Number(Deno.env.get("PORT")) || 5000;
+const { args } = Deno;
+const argsPort = flags.parse(args).port;
+const port = Number(argsPort) || 5000;
+console.log(port);
 
 // console.log(Deno.cwd());
 // console.log(import.meta.url);
