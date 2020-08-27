@@ -78,7 +78,7 @@ app.use(async (ctx) => {
     "/",
     "/index.html",
     // "/stylesheets/style.css",
-    "/css/styles.76fd936f822b0e25fab1.css",
+    "/css/styles.c9e67c45d5daceddadc4.css",
     // "/javascripts/script.js",
     "/js/main.f4a302c245bcbb6d83ea.js",
     "/images/favicon.png",
@@ -97,6 +97,7 @@ app.use(async (ctx) => {
     await send(ctx, filePath, {
       root: `${Deno.cwd()}/public`,
       index: "index.html",
+      gzip: true,
     });
   }
 });

@@ -848,10 +848,11 @@ header nav a {
 }
 
 @media only screen and (max-width: 634px) {
+  #nav1,
   #nav2,
   #nav3,
   #nav4 {
-    padding: 15px 0px;
+    padding: 16px 0px;
   }
 }
 
