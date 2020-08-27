@@ -17,7 +17,7 @@ const app = new Application();
 const { args } = Deno;
 const argsPort = flags.parse(args).port;
 const port = Number(argsPort) || 5000;
-console.log(port);
+// console.log(port);
 
 // console.log(Deno.cwd());
 // console.log(import.meta.url);
@@ -80,7 +80,7 @@ app.use(async (ctx) => {
     // "/stylesheets/style.css",
     "/css/styles.d4f0523a2d5177911051.css",
     // "/javascripts/script.js",
-    "/js/main.a0f67751e81a16b56713.js",
+    "/js/main.586453383385aeca6c25.js",
     "/images/favicon.png",
     "/images/earth-min.jpg",
     "/videos/earth-small-compressed-mp4.mp4",
