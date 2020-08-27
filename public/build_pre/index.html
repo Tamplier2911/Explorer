@@ -12,12 +12,16 @@
       href="//fonts.googleapis.com/css2?family=Space+Mono&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="../src/css/styles.css" /> -->
     <link rel="shortcut icon" href="images/favicon.png" />
+    <meta
+      name="description"
+      content="Explorer - universe is full of mystery."
+    />
   </head>
 
   <body id="body">
-    <script src="javascripts/script.js"></script>
+    <!-- <script src="../src/index.js"></script> -->
 
     <div class="container">
       <header class="header">
@@ -31,13 +35,19 @@
           </div>
           <div class="header__right">
             <h1 class="title-global">
-              <a onclick="navigate('launch')">NASA Mission Control</a>
+              <a id="nav1">NASA Mission Control</a>
             </h1>
             <nav>
               <ul>
-                <li><a onclick="navigate('launch')">[New Mission]</a></li>
-                <li><a onclick="navigate('upcoming')">[Upcoming]</a></li>
-                <li><a onclick="navigate('history')">[History]</a></li>
+                <li>
+                  <a id="nav2">[New Mission]</a>
+                </li>
+                <li>
+                  <a id="nav3">[Upcoming]</a>
+                </li>
+                <li>
+                  <a id="nav4">[History]</a>
+                </li>
               </ul>
             </nav>
           </div>
@@ -82,7 +92,9 @@
             </div>
             <form class="launch__form">
               <div class="form__element">
-                <label class="form__element--label">Launch Date </label>
+                <label class="form__element--label" for="launch-day">
+                  Launch Date
+                </label>
                 <input
                   class="form__element--input"
                   name="date"
@@ -92,7 +104,9 @@
                 />
               </div>
               <div class="form__element">
-                <label class="form__element--label">Mission Name </label>
+                <label class="form__element--label" for="mission-name">
+                  Mission Name
+                </label>
                 <input
                   class="form__element--input"
                   name="name"
@@ -101,7 +115,9 @@
                 />
               </div>
               <div class="form__element">
-                <label class="form__element--label">Rocket Type </label>
+                <label class="form__element--label" for="rocket-name">
+                  Rocket Type
+                </label>
                 <input
                   class="form__element--input"
                   name="rocket"
@@ -112,20 +128,16 @@
                 />
               </div>
               <div class="form__element">
-                <label class="form__element--label"
-                  >Destination Exoplanet</label
-                >
+                <label class="form__element--label" for="planets-selector">
+                  Destination Exoplanet
+                </label>
                 <select
                   class="form__element--input"
                   name="planet"
                   id="planets-selector"
                 ></select>
               </div>
-              <button
-                class="form__element--submit"
-                type="submit"
-                onclick="submitLaunch(event)"
-              >
+              <button id="submit" class="form__element--submit" type="submit">
                 [Save Mission ✔]
               </button>
             </form>

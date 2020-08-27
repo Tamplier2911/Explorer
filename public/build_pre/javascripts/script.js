@@ -1,7 +1,15 @@
 // @ts-nocheck
+// styles
+import './css/styles.css';
+
+// generator function runtime - e.g. async / await enabler
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 
 let launches = [];
 let planets = [];
+
+let url = '';
 
 const numberHeading = 'No.';
 const dateHeading = 'Date';
@@ -45,6 +53,7 @@ const loadRespectiveVideo = () => {
   const width = window.screen.width;
 
   if (width > 1024) {
+    video.poster = '/images/earth-min-desk.jpg';
     video.innerHTML = `
       <source
         src="./videos/earth-large-compressed-mp4.mp4"
@@ -54,8 +63,13 @@ const loadRespectiveVideo = () => {
         src="./videos/earth-large-compressed-webm.webm"
         type="video/webm"
       />
+      <img src="/images/earth-min-desk.jpg" 
+        alt="planet earth"  
+        title="Your browser does not support the <video> tag"
+      />
     `;
   } else if (width >= 720 && width <= 1024) {
+    video.poster = '/images/earth-min-tablet.jpg';
     video.innerHTML = `
       <source
         src="./videos/earth-medium-compressed-mp4.mp4"
@@ -65,8 +79,13 @@ const loadRespectiveVideo = () => {
         src="./videos/earth-medium-compressed-webm.webm"
         type="video/webm"
       />
+      <img src="/images/earth-min-tablet.jpg" 
+        alt="planet earth"  
+        title="Your browser does not support the <video> tag"
+      />
     `;
   } else if (width < 720) {
+    video.poster = '/images/earth-min-mob.jpg';
     video.innerHTML = `
       <source
         src="./videos/earth-small-compressed-mp4.mp4"
@@ -75,6 +94,10 @@ const loadRespectiveVideo = () => {
       <source
         src="./videos/earth-small-compressed-webm.webm"
         type="video/webm"
+      />
+      <img src="/images/earth-min-mob.jpg" 
+        alt="planet earth"  
+        title="Your browser does not support the <video> tag"
       />
     `;
   }
@@ -93,7 +116,7 @@ async function loadLaunches() {
     loadingLaunches = true;
     // console.log(loadingLaunches, 'launches');
 
-    const res = await fetch('/api/v1/launches', {
+    const res = await fetch(`${url}/api/v1/launches`, {
       method: 'GET',
     });
 
@@ -121,7 +144,7 @@ async function loadPlanets() {
   try {
     loadingPlanets = true;
 
-    const res = await fetch('/api/v1/planets', {
+    const res = await fetch(`${url}/api/v1/planets`, {
       method: 'GET',
     });
 
@@ -147,7 +170,7 @@ async function loadPlanets() {
 
 async function abortLaunch(flightNumber) {
   try {
-    const res = await fetch(`/api/v1/launches/${flightNumber}`, {
+    const res = await fetch(`${url}/api/v1/launches/${flightNumber}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -204,7 +227,7 @@ async function submitLaunch(e) {
     // loading
     loadingLaunches = true;
 
-    const res = await fetch('/api/v1/launches', {
+    const res = await fetch(`${url}/api/v1/launches`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -284,15 +307,44 @@ function listUpcoming() {
         const mission = chopString(launch.mission);
         const rocket = chopString(launch.rocket);
         const target = launch.target ?? '';
-        upcomingList.innerHTML += `
-         <div class="upcoming__bot--item">
-           <span class="upcoming__bot--desc" onclick="abortLaunch(${launch.flightNumber})">✖</span> 
-           <span class="upcoming__bot--desc">${flightNumber}</span> 
-           <span class="upcoming__bot--desc">${launchDate}</span> 
-           <span class="upcoming__bot--desc">${mission}</span> 
-           <span class="upcoming__bot--desc">${rocket}</span> 
-           <span class="upcoming__bot--desc">${target}</span>
-         </div>`;
+
+        const upcomingBot = document.createElement('div');
+        upcomingBot.classList.add('upcoming__bot--item');
+
+        const upcomingAbort = document.createElement('span');
+        upcomingAbort.textContent = '✖';
+        upcomingAbort.classList.add('upcoming__bot--desc');
+        upcomingAbort.addEventListener('click', () =>
+          abortLaunch(launch.flightNumber)
+        );
+        upcomingBot.appendChild(upcomingAbort);
+
+        const upcomingFlightNumber = document.createElement('span');
+        upcomingFlightNumber.textContent = flightNumber;
+        upcomingFlightNumber.classList.add('upcoming__bot--desc');
+        upcomingBot.appendChild(upcomingFlightNumber);
+
+        const upcomingLaunchDate = document.createElement('span');
+        upcomingLaunchDate.textContent = launchDate;
+        upcomingLaunchDate.classList.add('upcoming__bot--desc');
+        upcomingBot.appendChild(upcomingLaunchDate);
+
+        const upcomingMission = document.createElement('span');
+        upcomingMission.textContent = mission;
+        upcomingMission.classList.add('upcoming__bot--desc');
+        upcomingBot.appendChild(upcomingMission);
+
+        const upcomingRocket = document.createElement('span');
+        upcomingRocket.textContent = rocket;
+        upcomingRocket.classList.add('upcoming__bot--desc');
+        upcomingBot.appendChild(upcomingRocket);
+
+        const upcomingTarget = document.createElement('span');
+        upcomingTarget.textContent = target;
+        upcomingTarget.classList.add('upcoming__bot--desc');
+        upcomingBot.appendChild(upcomingTarget);
+
+        upcomingList.appendChild(upcomingBot);
       });
   }
 }
@@ -353,19 +405,25 @@ function navigate(navigateTo) {
     });
 
   if (navigateTo === 'upcoming') {
-    // loadLaunches();
-    // document.getElementById('launch-success').hidden = true;
     listUpcoming();
   } else if (navigateTo === 'history') {
-    // loadLaunches();
-    // document.getElementById('launch-success').hidden = true;
     listHistory();
   } else {
-    // loadPlanets
-    // document.getElementById('launch-success').hidden = false;
     listPlanets();
   }
 }
+
+const nav1 = document.getElementById('nav1');
+const nav2 = document.getElementById('nav2');
+const nav3 = document.getElementById('nav3');
+const nav4 = document.getElementById('nav4');
+const submit = document.getElementById('submit');
+
+nav1.addEventListener('click', () => navigate('launch'));
+nav2.addEventListener('click', () => navigate('launch'));
+nav3.addEventListener('click', () => navigate('upcoming'));
+nav4.addEventListener('click', () => navigate('history'));
+submit.addEventListener('click', (e) => submitLaunch(e));
 
 window.onload = () => {
   initValues();
