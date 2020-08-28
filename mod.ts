@@ -1,5 +1,10 @@
 // oak
 import { Application, send } from "./deps.ts";
+
+// protection headers
+import { Snelm } from "./deps.ts";
+
+// std flags parser
 import { flags } from "./deps.ts";
 
 // routers
@@ -37,6 +42,14 @@ app.use(async (ctx: any, next) => {
     ctx.response.body = "Internal server error!";
     throw new Error(`${err.message}\n${err.stack}`);
   }
+});
+
+const snelm = new Snelm("oak");
+
+// applying protection headers
+app.use(async (ctx, next) => {
+  ctx.response = snelm.snelm(ctx.request, ctx.response);
+  await next();
 });
 
 // middleware
@@ -98,6 +111,7 @@ app.use(async (ctx) => {
       root: `${Deno.cwd()}/public`,
       index: "index.html",
       gzip: true,
+      brotli: true,
     });
   }
 });

@@ -11,3 +11,4 @@ export {
   Router,
   send,
 } from "https://deno.land/x/oak@v6.0.2/mod.ts";
+export { Snelm } from "https://deno.land/x/snelm@1.3.0/mod.ts";
