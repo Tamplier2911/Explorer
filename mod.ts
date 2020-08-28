@@ -44,7 +44,18 @@ app.use(async (ctx: any, next) => {
   }
 });
 
-const snelm = new Snelm("oak");
+const snelm = new Snelm("oak", {
+  csp: {
+    directives: {
+      scriptSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        "explorer-s.herokuapp.com",
+      ],
+    },
+  },
+  featurePolicy: null,
+});
 
 // applying protection headers
 app.use(async (ctx, next) => {
