@@ -3,6 +3,10 @@ import { Application, send } from "./deps.ts";
 
 // protection headers
 import { Snelm } from "./deps.ts";
+import {
+  featuresPolicyConfig,
+  contentPolicyConfig,
+} from "./utils/protHeaderConfigs.ts";
 
 // std flags parser
 import { flags } from "./deps.ts";
@@ -45,16 +49,8 @@ app.use(async (ctx: any, next) => {
 });
 
 const snelm = new Snelm("oak", {
-  csp: {
-    directives: {
-      scriptSrc: [
-        "'self'",
-        "'unsafe-inline'",
-        "explorer-s.herokuapp.com",
-      ],
-    },
-  },
-  featurePolicy: null,
+  csp: contentPolicyConfig,
+  featurePolicy: featuresPolicyConfig,
 });
 
 // applying protection headers
