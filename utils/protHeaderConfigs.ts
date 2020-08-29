@@ -1,7 +1,6 @@
 export const featuresPolicyConfig = {
   features: {
     fullscreen: ["'self'"],
-    vibrate: ["'none'"],
     payment: ["'none'"],
     syncXhr: ["'none'"],
   },
